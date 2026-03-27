@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -6,20 +6,52 @@
     <title>한남대 스마트융합대학 학과 찾기</title>
     <style>
         :root { --primary: #0047a0; --bg: #f4f7f9; }
-        body { font-family: 'Pretendard', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
-        #test-container { background: white; max-width: 500px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        #test-container { background: white; max-width: 500px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); box-sizing: border-box; }
         h1 { font-size: 1.5rem; color: var(--primary); text-align: center; margin-bottom: 30px; }
         .question { margin-bottom: 25px; display: none; }
         .question.active { display: block; }
-        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
-        .options { display: flex; justify-content: space-between; align-items: center; }
-        .btn-score { border: 2px solid #ddd; background: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
-        .btn-score:hover, .btn-score.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+        .options { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .opt-label { font-size: 0.85rem; color: #888; white-space: nowrap; }
+        
+        .btn-score { 
+            border: 2px solid #ddd; 
+            background: white; 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
+        }
+
+        /* 모바일 터치 잔상 해결을 위한 CSS */
+        .btn-score:active {
+            background: var(--primary) !important;
+            color: white !important;
+            border-color: var(--primary) !important;
+        }
+
+        /* PC에서만 hover 효과 적용 */
+        @media (hover: hover) {
+            .btn-score:hover {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+        }
+
         .progress { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        
         #result { display: none; text-align: center; }
         .result-name { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
-        .btn-reset { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
+        .btn-reset { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -34,7 +66,7 @@
     <div id="result">
         <h2>당신에게 딱 맞는 학과는?</h2>
         <div class="result-name" id="dept-name"></div>
-        <p id="dept-desc" style="line-height: 1.6; color: #555; margin-bottom: 20px;"></p>
+        <p id="dept-desc" style="line-height: 1.6; color: #555; margin-bottom: 20px; word-break: keep-all;"></p>
         <button class="btn-reset" onclick="location.reload()">다시 테스트하기</button>
     </div>
 </div>
@@ -54,11 +86,11 @@
     ];
 
     const depts = {
-        AI: { name: "AI융합학과", desc: "인공지능의 원리와 응용을 배우며 미래를 설계하는 학과입니다! 현재 학생회에서 AI 유전자 스캐너 등 재미있는 프로젝트를 진행 중이에요." },
-        CS: { name: "컴퓨터공학과", desc: "소프트웨어 개발의 정석! 탄탄한 코딩 실력을 바탕으로 세상을 바꾸는 프로그램을 만듭니다." },
-        DATA: { name: "빅데이터응용학과", desc: "데이터 속에 숨겨진 가치를 발견하는 전문가! 통계와 AI를 결합한 데이터 과학을 탐구합니다." },
-        IM: { name: "산업경영공학과", desc: "기술과 경영의 만남! 시스템을 최적화하고 효율성을 극대화하는 공학 매니저를 양성합니다." },
-        MATH: { name: "수학과", desc: "모든 학문의 기초! 논리적 사고의 끝판왕으로서 수학적 원리를 탐구합니다." }
+        AI: { name: "AI융합학과", desc: "인공지능의 원리와 응용을 배우며 미래를 설계하는 학과입니다! 현재 학생회에서 'AI 유전자 스캐너'와 같은 흥미로운 프로젝트를 진행 중이에요. 우리랑 같이 미래를 만들자!" },
+        CS: { name: "컴퓨터공학과", desc: "소프트웨어 개발의 정석! 탄탄한 코딩 실력을 바탕으로 세상 모든 서비스를 구현하는 핵심 인재로 거듭날 수 있습니다." },
+        DATA: { name: "빅데이터응용학과", desc: "데이터 속에서 가치를 찾아내는 연금술사! 통계적 사고와 머신러닝을 결합해 세상을 분석하는 전문가가 될 수 있습니다." },
+        IM: { name: "산업경영공학과", desc: "공학적 지식에 경영 마인드를 더하다! 복잡한 시스템을 효율적으로 최적화하는 스마트한 관리자를 양성합니다." },
+        MATH: { name: "수학과", desc: "모든 과학의 기초! 논리적 사고의 정점에서 세상의 근본적인 원리를 탐구하고 해결하는 지성인의 전공입니다." }
     };
 
     let currentIdx = 0;
@@ -71,40 +103,33 @@
         div.innerHTML = `
             <p class="q-text">${idx + 1}. ${item.q}</p>
             <div class="options">
-                <span>비추천</span>
+                <span class="opt-label">전혀아님</span>
                 ${[1, 2, 3, 4, 5].map(num => `<button class="btn-score" onclick="next(${num})">${num}</button>`).join('')}
-                <span>추천</span>
+                <span class="opt-label">매우그럼</span>
             </div>
         `;
         wrapper.appendChild(div);
     });
 
     function next(score) {
+        // 현재 질문의 버튼들에서 포커스 해제 (잔상 방지)
+        const currentButtons = document.querySelectorAll('.question')[currentIdx].querySelectorAll('.btn-score');
+        currentButtons.forEach(btn => btn.blur());
+
         const currentQ = questions[currentIdx];
         for (let dept in currentQ.weights) {
             totalScores[dept] += currentQ.weights[dept] * score;
         }
 
-        // 현재 질문의 버튼들에서 'selected' 클래스를 모두 제거 (초기화)
-        const currentButtons = document.querySelectorAll('.question')[currentIdx].querySelectorAll('.btn-score');
-        currentButtons.forEach(btn => btn.classList.remove('selected'));
-
-        // 현재 질문 숨기기
         document.querySelectorAll('.question')[currentIdx].classList.remove('active');
-        
         currentIdx++;
         
         const progress = (currentIdx / questions.length) * 100;
         document.getElementById('progress-bar').style.width = `${progress}%`;
 
         if (currentIdx < questions.length) {
-            // 다음 질문 보여주기
-            const nextQuestion = document.querySelectorAll('.question')[currentIdx];
-            nextQuestion.classList.add('active');
-            
-            // 다음 질문의 버튼들도 혹시 모르니 초기화 상태로 시작
-            const nextButtons = nextQuestion.querySelectorAll('.btn-score');
-            nextButtons.forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll('.question')[currentIdx].classList.add('active');
+            window.scrollTo(0, 0); // 다음 질문 시 상단으로 이동
         } else {
             showResult();
         }
@@ -118,6 +143,7 @@
         const winner = Object.keys(totalScores).reduce((a, b) => totalScores[a] > totalScores[b] ? a : b);
         document.getElementById('dept-name').innerText = depts[winner].name;
         document.getElementById('dept-desc').innerText = depts[winner].desc;
+        window.scrollTo(0, 0);
     }
 </script>
 </body>
