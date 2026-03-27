@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한남대 스마트융합대학 학과 찾기</title>
+    <style>
+        :root { --primary: #0047a0; --bg: #f4f7f9; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        #test-container { background: white; max-width: 500px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.5rem; color: var(--primary); text-align: center; margin-bottom: 30px; }
+        .question { margin-bottom: 25px; display: none; }
+        .question.active { display: block; }
+        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
+        .options { display: flex; justify-content: space-between; align-items: center; }
+        .btn-score { border: 2px solid #ddd; background: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .btn-score:hover, .btn-score.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .progress { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        #result { display: none; text-align: center; }
+        .result-name { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
+        .btn-reset { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="test-container">
+    <div id="quiz-section">
+        <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+        <h1>나에게 맞는 전공은?</h1>
+        <div id="questions-wrapper"></div>
+    </div>
+
+    <div id="result">
+        <h2>당신에게 딱 맞는 학과는?</h2>
+        <div class="result-name" id="dept-name"></div>
+        <p id="dept-desc" style="line-height: 1.6; color: #555; margin-bottom: 20px;"></p>
+        <button class="btn-reset" onclick="location.reload()">다시 테스트하기</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "복잡한 문제를 해결할 때 논리적인 순서를 세우는 것이 즐겁다.", weights: { AI: 4, CS: 5, MATH: 3, IM: 2, DATA: 3 } },
+        { q: "수식이나 통계 자료를 통해 현상을 증명하는 것에 희열을 느낀다.", weights: { AI: 3, CS: 2, MATH: 5, IM: 3, DATA: 4 } },
+        { q: "사람의 얼굴을 인식하는 AI 기술에 관심이 많다.", weights: { AI: 5, CS: 3, MATH: 2, IM: 1, DATA: 4 } },
+        { q: "비효율적인 시스템을 개선하여 최대 효율을 내고 싶다.", weights: { AI: 2, CS: 2, MATH: 3, IM: 5, DATA: 3 } },
+        { q: "방대한 데이터 속에서 패턴을 찾아내는 것이 재밌다.", weights: { AI: 4, CS: 2, MATH: 3, IM: 3, DATA: 5 } },
+        { q: "눈에 보이는 웹이나 앱을 직접 코딩해보고 싶다.", weights: { AI: 3, CS: 5, MATH: 1, IM: 2, DATA: 2 } },
+        { q: "딥러닝의 수학적 구조가 궁금하다.", weights: { AI: 5, CS: 2, MATH: 4, IM: 1, DATA: 3 } },
+        { q: "기업 경영 문제를 공학 기법으로 해결해보고 싶다.", weights: { AI: 2, CS: 1, MATH: 2, IM: 5, DATA: 4 } },
+        { q: "최신 IT 트렌드를 누구보다 빠르게 접하는 편이다.", weights: { AI: 5, CS: 5, MATH: 1, IM: 3, DATA: 4 } },
+        { q: "데이터를 통해 미래를 예측하는 모델을 만들고 싶다.", weights: { AI: 4, CS: 2, MATH: 3, IM: 3, DATA: 5 } }
+    ];
+
+    const depts = {
+        AI: { name: "AI융합학과", desc: "인공지능의 원리와 응용을 배우며 미래를 설계하는 학과입니다! 현재 학생회에서 AI 유전자 스캐너 등 재미있는 프로젝트를 진행 중이에요." },
+        CS: { name: "컴퓨터공학과", desc: "소프트웨어 개발의 정석! 탄탄한 코딩 실력을 바탕으로 세상을 바꾸는 프로그램을 만듭니다." },
+        DATA: { name: "빅데이터응용학과", desc: "데이터 속에 숨겨진 가치를 발견하는 전문가! 통계와 AI를 결합한 데이터 과학을 탐구합니다." },
+        IM: { name: "산업경영공학과", desc: "기술과 경영의 만남! 시스템을 최적화하고 효율성을 극대화하는 공학 매니저를 양성합니다." },
+        MATH: { name: "수학과", desc: "모든 학문의 기초! 논리적 사고의 끝판왕으로서 수학적 원리를 탐구합니다." }
+    };
+
+    let currentIdx = 0;
+    let totalScores = { AI: 0, CS: 0, MATH: 0, IM: 0, DATA: 0 };
+
+    const wrapper = document.getElementById('questions-wrapper');
+    questions.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = `question ${idx === 0 ? 'active' : ''}`;
+        div.innerHTML = `
+            <p class="q-text">${idx + 1}. ${item.q}</p>
+            <div class="options">
+                <span>비추천</span>
+                ${[1, 2, 3, 4, 5].map(num => `<button class="btn-score" onclick="next(${num})">${num}</button>`).join('')}
+                <span>추천</span>
+            </div>
+        `;
+        wrapper.appendChild(div);
+    });
+
+    function next(score) {
+        const currentQ = questions[currentIdx];
+        for (let dept in currentQ.weights) {
+            totalScores[dept] += currentQ.weights[dept] * score;
+        }
+
+        document.querySelectorAll('.question')[currentIdx].classList.remove('active');
+        currentIdx++;
+        
+        const progress = (currentIdx / questions.length) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+
+        if (currentIdx < questions.length) {
+            document.querySelectorAll('.question')[currentIdx].classList.add('active');
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-section').style.display = 'none';
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+
+        const winner = Object.keys(totalScores).reduce((a, b) => totalScores[a] > totalScores[b] ? a : b);
+        document.getElementById('dept-name').innerText = depts[winner].name;
+        document.getElementById('dept-desc').innerText = depts[winner].desc;
+    }
+</script>
+</body>
+</html>
