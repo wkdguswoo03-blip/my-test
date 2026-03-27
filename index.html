@@ -73,16 +73,16 @@
 
 <script>
     const questions = [
-        { q: "복잡한 문제를 해결할 때 논리적인 순서를 세우는 것이 즐겁다.", weights: { AI: 4, CS: 5, MATH: 3, IM: 2, DATA: 3 } },
-        { q: "수식이나 통계 자료를 통해 현상을 증명하는 것에 희열을 느낀다.", weights: { AI: 3, CS: 2, MATH: 5, IM: 3, DATA: 4 } },
-        { q: "사람의 얼굴을 인식하는 AI 기술에 관심이 많다.", weights: { AI: 5, CS: 3, MATH: 2, IM: 1, DATA: 4 } },
-        { q: "비효율적인 시스템을 개선하여 최대 효율을 내고 싶다.", weights: { AI: 2, CS: 2, MATH: 3, IM: 5, DATA: 3 } },
-        { q: "방대한 데이터 속에서 패턴을 찾아내는 것이 재밌다.", weights: { AI: 4, CS: 2, MATH: 3, IM: 3, DATA: 5 } },
-        { q: "눈에 보이는 웹이나 앱을 직접 코딩해보고 싶다.", weights: { AI: 3, CS: 5, MATH: 1, IM: 2, DATA: 2 } },
-        { q: "딥러닝의 수학적 구조가 궁금하다.", weights: { AI: 5, CS: 2, MATH: 4, IM: 1, DATA: 3 } },
-        { q: "기업 경영 문제를 공학 기법으로 해결해보고 싶다.", weights: { AI: 2, CS: 1, MATH: 2, IM: 5, DATA: 4 } },
-        { q: "최신 IT 트렌드를 누구보다 빠르게 접하는 편이다.", weights: { AI: 5, CS: 5, MATH: 1, IM: 3, DATA: 4 } },
-        { q: "데이터를 통해 미래를 예측하는 모델을 만들고 싶다.", weights: { AI: 4, CS: 2, MATH: 3, IM: 3, DATA: 5 } }
+        { q: "복잡한 프로그램의 논리 구조를 설계하고 구현하는 것이 즐겁다.", weights: { CS: 5, AI: 3, DATA: 2, IM: 1, MATH: 1 } },
+        { q: "실제 현상보다 그 이면에 숨겨진 추상적인 수학 원리에 더 관심이 간다.", weights: { MATH: 5, AI: 2, CS: 1, DATA: 1, IM: 1 } },
+        { q: "AI 서비스(ChatGPT 등)를 사용하며 '이건 어떤 원리로 답할까?' 고민해본 적 있다.", weights: { AI: 5, DATA: 3, CS: 2, MATH: 1, IM: 1 } },
+        { q: "기업의 생산 공정이나 물류 시스템을 최적화하여 낭비를 줄이고 싶다.", weights: { IM: 5, DATA: 2, MATH: 1, AI: 1, CS: 1 } },
+        { q: "뉴스를 볼 때 제시된 그래프나 통계 수치의 정확성을 따져보는 편이다.", weights: { DATA: 5, MATH: 3, AI: 2, IM: 2, CS: 1 } },
+        { q: "내가 직접 만든 웹사이트나 앱이 실제로 돌아가는 걸 보면 뿌듯하다.", weights: { CS: 5, AI: 2, IM: 1, DATA: 1, MATH: 1 } },
+        { q: "고난도 수학 문제를 풀었을 때 느끼는 희열이 다른 공부보다 크다.", weights: { MATH: 5, CS: 1, AI: 2, IM: 2, DATA: 1 } },
+        { q: "경영적인 의사결정을 할 때 감보다는 확실한 수치 기반의 근거가 필요하다고 생각한다.", weights: { IM: 5, DATA: 4, AI: 1, CS: 1, MATH: 1 } },
+        { q: "자율주행 자동차나 로봇이 스스로 판단하고 움직이는 기술이 신기하다.", weights: { AI: 5, CS: 3, MATH: 2, IM: 1, DATA: 1 } },
+        { q: "미래의 주가나 날씨처럼 불확실한 미래를 확률적으로 예측하는 것이 흥미롭다.", weights: { DATA: 5, AI: 3, MATH: 2, IM: 2, CS: 1 } }
     ];
 
     const depts = {
