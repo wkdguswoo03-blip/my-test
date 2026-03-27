@@ -85,14 +85,26 @@
             totalScores[dept] += currentQ.weights[dept] * score;
         }
 
+        // 현재 질문의 버튼들에서 'selected' 클래스를 모두 제거 (초기화)
+        const currentButtons = document.querySelectorAll('.question')[currentIdx].querySelectorAll('.btn-score');
+        currentButtons.forEach(btn => btn.classList.remove('selected'));
+
+        // 현재 질문 숨기기
         document.querySelectorAll('.question')[currentIdx].classList.remove('active');
+        
         currentIdx++;
         
         const progress = (currentIdx / questions.length) * 100;
         document.getElementById('progress-bar').style.width = `${progress}%`;
 
         if (currentIdx < questions.length) {
-            document.querySelectorAll('.question')[currentIdx].classList.add('active');
+            // 다음 질문 보여주기
+            const nextQuestion = document.querySelectorAll('.question')[currentIdx];
+            nextQuestion.classList.add('active');
+            
+            // 다음 질문의 버튼들도 혹시 모르니 초기화 상태로 시작
+            const nextButtons = nextQuestion.querySelectorAll('.btn-score');
+            nextButtons.forEach(btn => btn.classList.remove('selected'));
         } else {
             showResult();
         }
