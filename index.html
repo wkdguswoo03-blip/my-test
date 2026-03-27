@@ -6,20 +6,20 @@
     <title>한남대 스마트융합대학 학과 찾기</title>
     <style>
         :root { --primary: #0047a0; --bg: #f4f7f9; }
-        body { font-family: 'Pretendard', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; }
         #test-container { background: white; max-width: 500px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); box-sizing: border-box; }
-        h1 { font-size: 1.5rem; color: var(--primary); text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 1.4rem; color: var(--primary); text-align: center; margin-bottom: 25px; word-break: keep-all; }
         .question { margin-bottom: 25px; display: none; }
         .question.active { display: block; }
-        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #333; }
         .options { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .opt-label { font-size: 0.85rem; color: #888; white-space: nowrap; }
+        .opt-label { font-size: 0.8rem; color: #888; white-space: nowrap; }
         
         .btn-score { 
-            border: 2px solid #ddd; 
+            border: 2px solid #eee; 
             background: white; 
-            width: 45px; 
-            height: 45px; 
+            width: 42px; 
+            height: 42px; 
             border-radius: 50%; 
             cursor: pointer; 
             transition: all 0.2s ease;
@@ -27,17 +27,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* 모바일 터치 잔상 해결을 위한 CSS */
         .btn-score:active {
             background: var(--primary) !important;
             color: white !important;
             border-color: var(--primary) !important;
         }
 
-        /* PC에서만 hover 효과 적용 */
         @media (hover: hover) {
             .btn-score:hover {
                 background: var(--primary);
@@ -46,12 +44,14 @@
             }
         }
 
-        .progress { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress { height: 6px; background: #eee; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
         
-        #result { display: none; text-align: center; }
-        .result-name { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
-        .btn-reset { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        #result { display: none; text-align: center; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .result-name { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
+        .btn-reset { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; width: 100%; }
+        .dept-tag { display: inline-block; background: #eef4ff; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -59,38 +59,44 @@
 <div id="test-container">
     <div id="quiz-section">
         <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
-        <h1>나에게 맞는 전공은?</h1>
+        <h1>스마트융합대학<br>나의 찰떡 전공은?</h1>
         <div id="questions-wrapper"></div>
     </div>
 
     <div id="result">
-        <h2>당신에게 딱 맞는 학과는?</h2>
+        <span class="dept-tag">추천 전공 결과</span>
         <div class="result-name" id="dept-name"></div>
-        <p id="dept-desc" style="line-height: 1.6; color: #555; margin-bottom: 20px; word-break: keep-all;"></p>
+        <p id="dept-desc" style="line-height: 1.7; color: #555; margin-bottom: 25px; word-break: keep-all; text-align: left;"></p>
         <button class="btn-reset" onclick="location.reload()">다시 테스트하기</button>
+        <p style="font-size: 0.8rem; color: #bbb; margin-top: 15px;">© 2026 AI융합학과 학생회</p>
     </div>
 </div>
 
 <script>
     const questions = [
-        { q: "복잡한 프로그램의 논리 구조를 설계하고 구현하는 것이 즐겁다.", weights: { CS: 5, AI: 3, DATA: 2, IM: 1, MATH: 1 } },
-        { q: "실제 현상보다 그 이면에 숨겨진 추상적인 수학 원리에 더 관심이 간다.", weights: { MATH: 5, AI: 2, CS: 1, DATA: 1, IM: 1 } },
-        { q: "AI 서비스(ChatGPT 등)를 사용하며 '이건 어떤 원리로 답할까?' 고민해본 적 있다.", weights: { AI: 5, DATA: 3, CS: 2, MATH: 1, IM: 1 } },
-        { q: "기업의 생산 공정이나 물류 시스템을 최적화하여 낭비를 줄이고 싶다.", weights: { IM: 5, DATA: 2, MATH: 1, AI: 1, CS: 1 } },
-        { q: "뉴스를 볼 때 제시된 그래프나 통계 수치의 정확성을 따져보는 편이다.", weights: { DATA: 5, MATH: 3, AI: 2, IM: 2, CS: 1 } },
-        { q: "내가 직접 만든 웹사이트나 앱이 실제로 돌아가는 걸 보면 뿌듯하다.", weights: { CS: 5, AI: 2, IM: 1, DATA: 1, MATH: 1 } },
-        { q: "고난도 수학 문제를 풀었을 때 느끼는 희열이 다른 공부보다 크다.", weights: { MATH: 5, CS: 1, AI: 2, IM: 2, DATA: 1 } },
-        { q: "경영적인 의사결정을 할 때 감보다는 확실한 수치 기반의 근거가 필요하다고 생각한다.", weights: { IM: 5, DATA: 4, AI: 1, CS: 1, MATH: 1 } },
-        { q: "자율주행 자동차나 로봇이 스스로 판단하고 움직이는 기술이 신기하다.", weights: { AI: 5, CS: 3, MATH: 2, IM: 1, DATA: 1 } },
-        { q: "미래의 주가나 날씨처럼 불확실한 미래를 확률적으로 예측하는 것이 흥미롭다.", weights: { DATA: 5, AI: 3, MATH: 2, IM: 2, CS: 1 } }
+        { q: "복잡한 프로그램의 논리 구조를 설계하고 구현하는 것이 즐겁다.", weights: { CS: 5, AI: 2, DATA: 1 } },
+        { q: "실제 현상보다 그 이면에 숨겨진 추상적인 수학 원리에 관심이 간다.", weights: { MATH: 5, AI: 1, DATA: 1 } },
+        { q: "AI 서비스(ChatGPT 등)를 사용하며 '이건 어떤 원리로 답할까?' 고민해본 적 있다.", weights: { AI: 5, DATA: 2, CS: 1 } },
+        { q: "기업의 생산 공정이나 물류 시스템을 최적화하여 효율을 높이고 싶다.", weights: { IM: 5, DATA: 2, MATH: 1 } },
+        { q: "뉴스를 볼 때 제시된 그래프나 통계 수치의 정확성을 따져보는 편이다.", weights: { DATA: 5, MATH: 2, IM: 2 } },
+        { q: "내가 직접 만든 웹사이트나 앱이 실제로 작동하는 걸 보면 뿌듯하다.", weights: { CS: 5, AI: 1, IM: 1 } },
+        { q: "고난도 수학 문제를 풀었을 때 느끼는 희열이 다른 공부보다 크다.", weights: { MATH: 5, CS: 1, AI: 1 } },
+        { q: "의사결정을 할 때 감보다는 확실한 데이터 기반의 근거를 선호한다.", weights: { IM: 4, DATA: 5, AI: 1 } },
+        { q: "자율주행 자동차나 로봇이 스스로 판단하고 움직이는 기술이 신기하다.", weights: { AI: 5, CS: 2, MATH: 1 } },
+        { q: "불확실한 미래를 확률적으로 예측하고 모델링하는 것이 흥미롭다.", weights: { DATA: 5, AI: 2, MATH: 2 } },
+        { q: "팀 프로젝트를 할 때 전체적인 일정과 역할을 조율하는 리더 역할을 선호한다.", weights: { IM: 5, CS: 1, DATA: 1 } },
+        { q: "새로운 전자기기를 사면 설정 메뉴를 하나하나 다 눌러보며 기능을 익힌다.", weights: { CS: 5, AI: 2, IM: 1 } },
+        { q: "공식만 외우기보다 그 공식이 왜 그렇게 유도되는지 증명 과정을 알아야 직성이 풀린다.", weights: { MATH: 5, AI: 2, DATA: 1 } },
+        { q: "사람의 뇌 구조나 학습 방식이 기계에 어떻게 적용되는지 호기심이 생긴다.", weights: { AI: 5, MATH: 1, CS: 1 } },
+        { q: "유튜브 알고리즘이 내 취향을 어떻게 분석해서 추천해 주는지 궁금하다.", weights: { DATA: 4, AI: 5, CS: 1 } }
     ];
 
     const depts = {
-        AI: { name: "AI융합학과", desc: "인공지능의 원리와 응용을 배우며 미래를 설계하는 학과입니다! 현재 학생회에서 'AI 유전자 스캐너'와 같은 흥미로운 프로젝트를 진행 중이에요. 우리랑 같이 미래를 만들자!" },
-        CS: { name: "컴퓨터공학과", desc: "소프트웨어 개발의 정석! 탄탄한 코딩 실력을 바탕으로 세상 모든 서비스를 구현하는 핵심 인재로 거듭날 수 있습니다." },
-        DATA: { name: "빅데이터응용학과", desc: "데이터 속에서 가치를 찾아내는 연금술사! 통계적 사고와 머신러닝을 결합해 세상을 분석하는 전문가가 될 수 있습니다." },
-        IM: { name: "산업경영공학과", desc: "공학적 지식에 경영 마인드를 더하다! 복잡한 시스템을 효율적으로 최적화하는 스마트한 관리자를 양성합니다." },
-        MATH: { name: "수학과", desc: "모든 과학의 기초! 논리적 사고의 정점에서 세상의 근본적인 원리를 탐구하고 해결하는 지성인의 전공입니다." }
+        AI: { name: "AI융합학과", desc: "미래를 여는 지능형 시스템의 주인공! 인공지능의 핵심 알고리즘부터 실질적인 응용 기술까지 배우는 학과입니다. 학생회와 함께 'AI 유전자 스캐너' 같은 멋진 프로젝트를 만들어봐요!" },
+        CS: { name: "컴퓨터공학과", desc: "세상의 모든 서비스를 만드는 개발 전문가! 탄탄한 소프트웨어 개발 역량을 키워 구글, 네이버 같은 글로벌 IT 기업의 주역으로 성장하고 싶은 당신에게 추천합니다." },
+        DATA: { name: "빅데이터응용학과", desc: "데이터 속에서 가치를 찾아내는 통찰력의 소유자! 통계적 지식과 IT 기술을 결합해 비즈니스와 사회의 문제를 데이터로 해결하는 전문가가 될 수 있습니다." },
+        IM: { name: "산업경영공학과", desc: "효율과 최적화를 설계하는 스마트 매니저! 공학적 분석력과 경영 마인드를 모두 갖추어 기업의 시스템을 혁신하고 리드하는 핵심 인재를 양성합니다." },
+        MATH: { name: "수학과", desc: "논리적 사고의 끝판왕! 모든 현대 과학과 공학의 기초인 수학적 원리를 탐구하며, 고도의 분석력이 요구되는 금융, 암호, 연구 분야의 브레인이 될 수 있습니다." }
     };
 
     let currentIdx = 0;
@@ -112,13 +118,12 @@
     });
 
     function next(score) {
-        // 현재 질문의 버튼들에서 포커스 해제 (잔상 방지)
         const currentButtons = document.querySelectorAll('.question')[currentIdx].querySelectorAll('.btn-score');
         currentButtons.forEach(btn => btn.blur());
 
         const currentQ = questions[currentIdx];
         for (let dept in currentQ.weights) {
-            totalScores[dept] += currentQ.weights[dept] * score;
+            totalScores[dept] += currentQ.weights[dept] * (score - 1); // 1점은 0점 처리하여 차별화
         }
 
         document.querySelectorAll('.question')[currentIdx].classList.remove('active');
@@ -129,7 +134,7 @@
 
         if (currentIdx < questions.length) {
             document.querySelectorAll('.question')[currentIdx].classList.add('active');
-            window.scrollTo(0, 0); // 다음 질문 시 상단으로 이동
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             showResult();
         }
@@ -143,7 +148,7 @@
         const winner = Object.keys(totalScores).reduce((a, b) => totalScores[a] > totalScores[b] ? a : b);
         document.getElementById('dept-name').innerText = depts[winner].name;
         document.getElementById('dept-desc').innerText = depts[winner].desc;
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 </body>
